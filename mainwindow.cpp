@@ -21,6 +21,8 @@ void MainWindow::updateView()
 {
 
     static int curIndex = 0;
+    if(curIndex >= mnistReader.trainingImages.size())
+        return;
     if(successReading)
         ui->imageLabel->setPixmap(QPixmap::fromImage( mnistReader.trainingImages[curIndex]));
     if(successCanny)
