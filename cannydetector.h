@@ -16,7 +16,7 @@ private:
     QImage Mat2QImage(cv::Mat const& src);
     cv::Mat QImage2Mat(QImage const& src);
 
-    int lowThreshold = 20;
+    int lowThreshold = 0;
     int ratio = 3;
     int kernel_size = 3;
 };
