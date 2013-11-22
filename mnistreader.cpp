@@ -12,12 +12,6 @@ MNISTReader::MNISTReader(QObject *parent) :
 MNISTReader::~MNISTReader()
 {
 
-    // delete QImage first
-    for(QVector<QImage*>::Iterator it = trainingImages.begin(); it != trainingImages.end(); ++it)
-    {
-        delete *it;
-        *it = NULL;
-    }
     // clean the buffer QImage used
     for(QVector<uchar*>::Iterator it = trainingImageBuffer.begin(); it != trainingImageBuffer.end(); ++it)
     {
@@ -65,18 +59,19 @@ bool MNISTReader::readTrainibetterbetterngImage(QString filename)
     QVector<QRgb> grayscaleTable;
     for(int i = 0; i < 256; i++)
         grayscaleTable.push_back(qRgb(i,i,i));
-    for(int i = 0; i < TRAINING_IMAGE_CNT; i++)
+    //for(int i = 0; i < TRAINING_IMAGE_CNT; i++)
+    for(int i = 0; i < NUMBER_OF_READING; ++i)
     {
         // read in raw data of one image
         pImageBuffer = new uchar[rowCnt * colCnt];
-        for(uint i = 0; i < rowCnt * colCnt; ++i)
-            in >> pImageBuffer[i];
+        for(uint j = 0; j < rowCnt * colCnt; ++j)
+            in >> pImageBuffer[j];
 
         pImage = new QImage(pImageBuffer,colCnt,rowCnt,QImage::Format_Indexed8);
         pImage->setColorTable(grayscaleTable);
-
         trainingImageBuffer.push_back(pImageBuffer);
-        trainingImages.push_back(pImage);
+        trainingImages.push_back(pImage->convertToFormat(QImage::Format_RGB888));
+        delete pImage;
     }
 
     return true;

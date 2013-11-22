@@ -13,12 +13,14 @@ public:
     explicit MNISTReader(QObject *parent = 0);
     ~MNISTReader();
     bool readTrainibetterbetterngImage(QString filename);
-    QVector<QImage *> trainingImages;
+    QVector<QImage > trainingImages;
 
     const static int TRAINING_IMAGE_CNT = 60000;
     const static int TEST_IMAGE_CNT = 10000;
     const static int MNIST_IMAGE_WIDTH = 28;
     const static int MNIST_IMAGE_HEIGHT = 28;
+
+    const static int NUMBER_OF_READING = 30;
 
 signals:
 

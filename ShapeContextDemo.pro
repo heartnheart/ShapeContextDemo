@@ -14,12 +14,21 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    mnistreader.cpp
+    mnistreader.cpp \
+    cannydetector.cpp
 
 HEADERS  += mainwindow.h \
-    mnistreader.h
+    mnistreader.h \
+    cannydetector.h
 
 FORMS    += mainwindow.ui
 
 RESOURCES += \
     ShapeContext.qrc
+
+INCLUDEPATH += $$(OPENCV_INCLUDE)
+
+LIBS += -L$$(OPENCV_LIB)
+
+LIBS += -lopencv_core247.dll\
+        -lopencv_imgproc247.dll
