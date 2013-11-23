@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     mnistreader.cpp \
-    cannydetector.cpp
+    cannydetector.cpp \
+    shapecontextextractor.cpp
 
 HEADERS  += mainwindow.h \
     mnistreader.h \
-    cannydetector.h
+    cannydetector.h \
+    shapecontextextractor.h
 
 FORMS    += mainwindow.ui
 

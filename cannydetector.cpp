@@ -35,7 +35,7 @@ cv::Mat CannyDetector::QImage2Mat(QImage const& src)
      return result;
 }
 
-bool CannyDetector::detect(const QVector<QImage > &images)
+bool CannyDetector::detect(const QVector<QImage > &images, QVector<QImage> &output)
 {
 
 
@@ -44,17 +44,28 @@ bool CannyDetector::detect(const QVector<QImage > &images)
     {
         cv::Mat src = QImage2Mat(*it);
         /// Reduce noise with a kernel 3x3
-        cv::blur( src, blured_image, cv::Size(3,3) );
+        cv::blur( src, blured_image, cv::Size(4,4) );
         detected_edges = cv::Scalar::all(0);
         /// Canny detector
-        cv::Canny( blured_image, detected_edges, 1, 2, 3 );
-        cannyImages.push_back(Mat2QImage(detected_edges));
-
-      //  cannyImages.push_back(Mat2QImage(blured_image));
-
-        static int curI = 0;
-        qDebug() << "current is"  << ++curI << " ";
+        cv::Canny( blured_image, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size);
+        output.push_back(Mat2QImage(detected_edges));
     }
-    qDebug() << "return true";
+    return true;
+}
+
+bool CannyDetector::cannyOnMNIST(const QVector<QImage> &trainingImages, const QVector<QImage> &testImages)
+{
+    bool successDetect = detect(trainingImages,cannyTrainingImages);
+    if(!successDetect)
+    {
+        qDebug() << "Error when perform canny detection on MNIST Training images";
+        return false;
+    }
+    successDetect = detect(testImages,cannyTestImages);
+    if(!successDetect)
+    {
+        qDebug() << "Error when perform canny detection on MNIST Training images";
+        return false;
+    }
     return true;
 }

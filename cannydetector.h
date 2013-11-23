@@ -8,15 +8,16 @@ class CannyDetector
 public:
     CannyDetector();
     ~CannyDetector();
-    bool detect(const QVector<QImage > &images);
 
-    QVector<QImage > cannyImages;
 
+    QVector<QImage > cannyTrainingImages;
+    QVector<QImage > cannyTestImages;
+    bool cannyOnMNIST(const QVector<QImage> & trainingImages, const QVector<QImage> & testImages);
 private:
     QImage Mat2QImage(cv::Mat const& src);
     cv::Mat QImage2Mat(QImage const& src);
-
-    int lowThreshold = 0;
+    bool detect(const QVector<QImage > &images, QVector<QImage> & output);
+    int lowThreshold = 20;
     int ratio = 3;
     int kernel_size = 3;
 };

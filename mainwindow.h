@@ -5,6 +5,8 @@
 #include "mnistreader.h"
 #include "cannydetector.h"
 #include <QTimer>
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -19,12 +21,14 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_actionRead_Training_Image_triggered();
+
 
     void updateView();
     void on_actionCanny_Edge_Detect_triggered();
 
     void on_actionShow_triggered();
+
+    void on_actionRead_Training_and_Test_Images_triggered();
 
 private:
     Ui::MainWindow *ui;

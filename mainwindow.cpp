@@ -3,6 +3,8 @@
 #include <QtDebug>
 #include <QPixmap>
 #include <QElapsedTimer>
+#include <opencv/cv.h>
+#include <opencv/cvwimage.h>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -20,33 +22,47 @@ MainWindow::~MainWindow()
 void MainWindow::updateView()
 {
 
-    static int curIndex = 0;
-    if(curIndex >= mnistReader.trainingImages.size())
-        return;
-    if(successReading)
-        ui->imageLabel->setPixmap(QPixmap::fromImage( mnistReader.trainingImages[curIndex]));
-    if(successCanny)
-        ui->cannyLabel->setPixmap(QPixmap::fromImage(cannyDetector.cannyImages[curIndex]));
+    static int curTestIndex = 0;
+    static int curTrainingIndex = 0;
 
-    ++curIndex;
+    if(curTrainingIndex == mnistReader.trainingImages.size())
+    {
+        curTrainingIndex = 0;
+        ++curTestIndex;
+    }
+
+    if(curTestIndex == mnistReader.testImages.size())
+        return;
+
+    if(successReading)
+    {
+        ui->lblTestImage->setPixmap(QPixmap::fromImage(mnistReader.testImages[curTestIndex]));
+        ui->lblTrainingImage->setPixmap(QPixmap::fromImage(mnistReader.trainingImages[curTrainingIndex]));
+    }
+    if(successCanny)
+    {
+
+        ui->lblCannyTest->setPixmap(QPixmap::fromImage(cannyDetector.cannyTestImages[curTestIndex]));
+        ui->lblCannyTraining->setPixmap(QPixmap::fromImage(cannyDetector.cannyTrainingImages[curTrainingIndex]));
+    }
+
+
+
+
+
+
+
+
+    ++curTrainingIndex;
+
 }
 
-void MainWindow::on_actionRead_Training_Image_triggered()
-{
-   successReading = mnistReader.readTrainibetterbetterngImage("../ShapeContextDemo/data/MNIST/train-images.idx3-ubyte");
-   if(!successReading)
-   {
-       qDebug() << "Failed to construct image";
-       return;
-   }
-
-  }
 
 
 
 void MainWindow::on_actionCanny_Edge_Detect_triggered()
 {
-   successCanny = cannyDetector.detect(mnistReader.trainingImages);
+   successCanny = cannyDetector.cannyOnMNIST(mnistReader.trainingImages,mnistReader.testImages);
    if(!successCanny)
    {
        qDebug() << "Failed to detecing edges using Canny detector";
@@ -59,4 +75,17 @@ void MainWindow::on_actionShow_triggered()
     // update view
    viewTimer->start(200);
 
+}
+
+void MainWindow::on_actionRead_Training_and_Test_Images_triggered()
+{
+
+
+    successReading = mnistReader.readMNISTImages("../ShapeContextDemo/data/MNIST/train-images.idx3-ubyte"
+                                                 ,"../ShapeContextDemo/data/MNIST/t10k-images.idx3-ubyte");
+    if(!successReading)
+    {
+        qDebug() << "Failed to read Test image";
+        return;
+    }
 }
