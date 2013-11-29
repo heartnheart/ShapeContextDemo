@@ -32,5 +32,6 @@ INCLUDEPATH += $$(OPENCV_INCLUDE)
 
 LIBS += -L$$(OPENCV_LIB)
 
-LIBS += -lopencv_core247.dll\
-        -lopencv_imgproc247.dll
+LIBS += -lopencv_core300.dll\
+        -lopencv_imgproc300.dll\
+        -lopencv_shape300.dll

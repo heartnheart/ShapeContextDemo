@@ -39,6 +39,43 @@ bool MNISTReader::readMNISTImages(QString trainingFile, QString testFile)
     return true;
 }
 
+bool MNISTReader::readMNISTData()
+{
+    bool successReading = readMNISTImages("../ShapeContextDemo/data/MNIST/train-images.idx3-ubyte"
+                                          ,"../ShapeContextDemo/data/MNIST/t10k-images.idx3-ubyte");
+
+    if(!successReading)
+    {
+        qDebug() << "Failed to read MNIST images";
+        return false;
+    }
+    successReading = readMNISTLabels("../ShapeContextDemo/data/MNIST/train-labels.idx1-ubyte",
+                                     "../ShapeContextDemo/data/MNIST/t10k-labels.idx1-ubyte");
+    if(!successReading)
+    {
+        qDebug() << "Failed to read MNIST labels";
+        return false;
+    }
+    return true;
+}
+
+bool MNISTReader::readMNISTLabels(QString trainingFile, QString testFile)
+{
+    bool success = readTrainingLabels(trainingFile);
+    if(!success)
+    {
+        qDebug() << "Can't read MNIST training labels";
+        return false;
+    }
+    success = readTestLabels(testFile);
+    if(!success)
+    {
+        qDebug() << "Cant' open MNIST test labels";
+        return false;
+    }
+    qDebug() << "Success Readin labels" << endl;
+    return true;
+}
 
 bool MNISTReader::readTrainingImage(QString filename)
 {
@@ -148,6 +185,82 @@ bool MNISTReader::readTestImage(QString filename)
         testImages.push_back(pImage->convertToFormat(QImage::Format_RGB888));
         delete pImage;
     }
+
+    return true;
+}
+
+bool MNISTReader::readTrainingLabels(QString filename)
+{
+    QFile file(filename);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Can't open training LABEL file " << file.fileName();
+        return false;
+    }
+    QDataStream in(&file);    // read the data serialized from the file
+
+    // readin magic number
+    quint32 magicNumber;
+    in >> magicNumber;
+    if(magicNumber != TRAINING_LABEL_MAGIC_NUMBER)
+    {
+        qDebug() << "This (" << magicNumber << ") is not the correct MNIST TRAINING LABEL file!";
+        return false;
+    }
+    qDebug("magic number = 0x%08x\n" ,magicNumber);
+
+    // readin number of images
+    quint32 numberOfImages;
+    in >> numberOfImages;
+    qDebug("number of items = %d\n",numberOfImages);
+    Q_ASSERT(numberOfImages == TRAINING_IMAGE_CNT);
+
+
+    uchar tlabel;
+    for(int i = 0; i < TRAINING_IMAGE_CNT; ++i)
+    {
+        in >> tlabel;
+        trainingLabels.append(tlabel);
+    }
+
+
+    return true;
+}
+
+bool MNISTReader::readTestLabels(QString filename)
+{
+    QFile file(filename);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Can't open test LABEL file " << file.fileName();
+        return false;
+    }
+    QDataStream in(&file);    // read the data serialized from the file
+
+    // readin magic number
+    quint32 magicNumber;
+    in >> magicNumber;
+    if(magicNumber != TEST_LABEL_MAGIC_NUMBER)
+    {
+        qDebug() << "This (" << magicNumber << ") is not the correct MNIST TEST LABEL file!";
+        return false;
+    }
+    qDebug("magic number = 0x%08x\n" ,magicNumber);
+
+    // readin number of labels
+    quint32 numberOfImages;
+    in >> numberOfImages;
+    qDebug("number of items = %d\n",numberOfImages);
+    Q_ASSERT(numberOfImages == TEST_IMAGE_CNT);
+
+
+    uchar tlabel;
+    for(int i = 0; i < TRAINING_IMAGE_CNT; ++i)
+    {
+        in >> tlabel;
+        testLabels.append(tlabel);
+    }
+
 
     return true;
 }

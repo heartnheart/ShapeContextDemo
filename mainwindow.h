@@ -28,7 +28,10 @@ private slots:
 
     void on_actionShow_triggered();
 
-    void on_actionRead_Training_and_Test_Images_triggered();
+
+
+
+    void on_actionRead_MNIST_Data_triggered();
 
 private:
     Ui::MainWindow *ui;

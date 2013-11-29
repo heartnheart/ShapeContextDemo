@@ -1,5 +1,6 @@
 #include "cannydetector.h"
 #include <QDebug>
+#include <opencv2/imgproc.hpp>
 CannyDetector::CannyDetector()
 {
 }
